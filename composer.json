@@ -1,0 +1,43 @@
+{
+  "name": "prestashopcorp/ps_mcp_boilerplate",
+  "description": "This is simple boilerplate for ps_mcp module and demonstrate how to add some tools on another modules for ps_mcp",
+  "type": "prestashop-module",
+  "authors": [
+    {
+      "name": "CloudSync team",
+      "email": "cloudsync-support@prestashop.com",
+      "homepage": "https://github.com/PrestaShopCorp/ps_mcp_boilerplate",
+      "role": "Developer"
+    }
+  ],
+  "license": "OSL-3.0",
+  "config": {
+    "preferred-install": "dist",
+    "platform": {
+      "php": "8.1"
+    },
+    "optimize-autoloader": true,
+    "prepend-autoloader": false,
+    "platform-check": false
+  },
+  "autoload": {
+    "classmap": [
+      "ps_mcp_boilerplate.php"
+    ],
+    "psr-4": {
+      "PrestaShop\\Module\\PsMcpBoilerplate\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=8.1"
+  },
+  "extra": {
+    "prestashop": {
+      "autoload": {
+        "psr-4": {
+          "PrestaShop\\Module\\PsMcpBoilerplate\\": "src/"
+        }
+      }
+    }
+  }
+}
