@@ -2,18 +2,16 @@
 
 namespace PrestaShop\Module\PsMcpTools;
 
-use PhpMcp\Server\Attributes\McpTool;
-use PhpMcp\Server\Attributes\Schema;
-
+/**
+ * @phpstan-ignore attribute.notFound
+ */
 class HelloWorld
 {
-    /** @phpstan-ignore attribute.notFound */
-    #[McpTool(
+    #[\PhpMcp\Server\Attributes\McpTool(
         name: 'say_hello',
         description: 'Say hello to a user'
     )]
-    /** @phpstan-ignore attribute.notFound */
-    #[Schema(
+    #[\PhpMcp\Server\Attributes\Schema(
         properties: [
             'username' => ['type' => 'string', 'description' => 'Username'],
         ],
