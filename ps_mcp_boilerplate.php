@@ -44,11 +44,6 @@ class Ps_mcp_boilerplate extends Module
         $this->ps_versions_compliancy = ['min' => '8.2', 'max' => _PS_VERSION_];
     }
 
-    public function getMultistoreCompatibility(): int
-    {
-        return (int) true;
-    }
-
     public function isMcpCompliant(): bool
     {
         return true;
