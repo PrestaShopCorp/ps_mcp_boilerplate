@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
-    <name>ps_mcp_tools</name>
-    <displayName><![CDATA[PrestaShop MCP Tools]]></displayName>
+    <name>ps_mcp_boilerplate</name>
+    <displayName><![CDATA[PrestaShop MCP Boilerplate]]></displayName>
     <version><![CDATA[0.0.0]]></version>
-    <description><![CDATA[Add some tools for managing your PrestaShop store, through ps_mcp module.]]></description>
+    <description><![CDATA[Add some functions for managing your PrestaShop store, through ps_mcp module.]]></description>
     <author><![CDATA[PrestaShop]]></author>
     <tab><![CDATA[administration]]></tab>
 	<confirmUninstall><![CDATA[Do you really want to uninstall this module?]]></confirmUninstall>

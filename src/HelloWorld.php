@@ -1,36 +1,53 @@
 <?php
-
 /**
- * Copyright since 2007 PrestaShop SA and Contributors
- * PrestaShop is an International Registered Trademark & Property of PrestaShop SA
+ * Copyright (c) 2025 PrestaShop SA
  *
- * NOTICE OF LICENSE
+ * All Rights Reserved.
  *
- * This source file is subject to the Academic Free License version 3.0
- * that is bundled with this package in the file LICENSE.md.
- * It is also available through the world-wide-web at this URL:
- * https://opensource.org/licenses/AFL-3.0
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@prestashop.com so we can send you a copy immediately.
+ * This module is proprietary software owned by PrestaShop SA. All intellectual property rights, including copyrights, trademarks, and trade secrets, are reserved by PrestaShop SA.
  *
- * @author    PrestaShop SA and Contributors <contact@prestashop.com>
- * @copyright Since 2007 PrestaShop SA and Contributors
- * @license   https://opensource.org/licenses/AFL-3.0 Academic Free License version 3.0
+ * The PS MCP Server module was developed by PrestaShop, which holds all associated intellectual property rights. The license granted to the user does not entail any transfer of rights. The user shall refrain from any act that may infringe upon PrestaShop's rights and undertakes to strictly comply with the limitations of the license set out below. PrestaShop grants the user a personal, non-exclusive, non-transferable, and non-sublicensable license to use the MCP Server module, worldwide and for the entire duration of use of the module. This license is strictly limited to installing the module and using it solely for the operation of the user's PrestaShop store.
  */
 
-namespace PrestaShop\Module\PsMcpTools;
+namespace PrestaShop\Module\PsMcpBoilerplate;
 
-/**
- * @phpstan-ignore attribute.notFound
- */
+use Configuration;
+use PrestaShop\Module\PsMcpServer\Server\Attributes\PsMcpTool;
+use PrestaShop\Module\PsMcpServer\Server\Attributes\PsMcpSchema;
+use PrestaShop\Module\PsMcpServer\Server\Attributes\PsMcpIcon;
+use PrestaShop\Module\PsMcpServer\Server\Attributes\PsMcpToolAnnotations;
+use PrestaShop\Module\PsMcpServer\Server\Attributes\PsMcpPrompt;
+use PrestaShop\Module\PsMcpServer\Server\Attributes\PsMcpPromptArgument;
+use PrestaShop\Module\PsMcpServer\Server\Attributes\PsMcpResource;
+use PrestaShop\Module\PsMcpServer\Server\Attributes\PsMcpResourceTemplate;
+use PrestaShop\Module\PsMcpServer\Server\Exceptions\PromptGetException;
+use PrestaShop\Module\PsMcpServer\Server\Exceptions\PsMcpResourceReadException;
+use PrestaShop\Module\PsMcpServer\Server\Exceptions\PsMcpToolCallException;
+use Product;
+
 class HelloWorld
 {
-    #[\PhpMcp\Server\Attributes\McpTool(
+    #[PsMcpTool(
         name: 'say_hello',
-        description: 'Say hello to a user'
+        title: 'Hello User',
+        description: 'Say hello to a user',
+        annotations: new PsMcpToolAnnotations(
+            title: 'Hello User',
+            readOnlyHint: true,
+            destructiveHint: false,
+            idempotentHint: true,
+            openWorldHint: false,
+        ),
+        icons: [
+            new PsMcpIcon(
+                src: 'https://picsum.photos/100/100',
+                mimeType: 'image/png',
+                sizes: ['100x100']
+            )
+        ],
+        meta: ['category' => 'greeting']
     )]
-    #[\PhpMcp\Server\Attributes\Schema(
+    #[PsMcpSchema(
         properties: [
             'username' => ['type' => 'string', 'description' => 'Username'],
         ],
@@ -38,6 +55,77 @@ class HelloWorld
     )]
     public function sayHello(string $username): string
     {
-        return 'Hello, ' . $username . '!';
+        try {
+            return "Hello, $username! Welcome to your PrestaShop store.";
+        } catch (\Exception $e) {
+            throw new PsMcpToolCallException($e->getMessage(), $e->getCode());
+        }
+    }
+
+    #[PsMcpPrompt(
+        name: 'image_generation',
+        title: 'Image Generation',
+        description: 'Generate images for products',
+        icons: [
+            new PsMcpIcon(
+                src: 'https://picsum.photos/100/100',
+                mimeType: 'image/png',
+                sizes: ['100x100']
+            )
+        ],
+        meta: ['category' => 'image_generation']
+    )]
+    public function generateImage(string $color, string $size): array {
+        try {
+            return [
+                ['role' => 'assistant', 'content' => 'You are an image generation tool for a PrestaShop store. You generate product images based on the provided color and size.'],
+                ['role' => 'user', 'content' => "Generate an image with the following parameters: color: $color, size: $size."],
+                ['role' => 'assistant', 'content' => "Here is your generated image: https://your-awesome-image-generation-url?color=" . urlencode($color) . "&size=" . urlencode($size)]
+            ];
+        } catch (\Exception $e) {
+            throw new PromptGetException($e->getMessage(), $e->getCode());
+        }
+    }
+
+    #[PsMcpResource(
+        uri: 'store://configuration',
+        name: 'store_configuration',
+        description: 'Returns the current store configuration (currency, language, timezone...)',
+        mimeType: 'application/json',
+        size: 18,
+        icons: [
+            new PsMcpIcon(
+                src: 'https://picsum.photos/100/100',
+                mimeType: 'image/png',
+                sizes: ['100x100']
+            )
+        ],
+        meta: ['category' => 'store_management']
+    )]
+    public function getStoreConfiguration(): array {
+        try {
+            return [
+                'currency' => Configuration::get('PS_CURRENCY_DEFAULT'),
+                'language' => Configuration::get('PS_LANG_DEFAULT'),
+            ];
+        } catch (\Exception $e) {
+            throw new PsMcpResourceReadException($e->getMessage(), $e->getCode());
+        }
+    }
+
+    #[PsMcpResourceTemplate(
+        uriTemplate: 'products://{id}',
+        name: 'product_by_id',
+        description: 'Returns the full details of a product identified by its numeric ID',
+        mimeType: 'application/json',
+        meta: ['category' => 'product_management']
+    )]
+    public function getProductById(int $id): array {
+        try {
+             $product = new Product($id, true);
+            return $product->getFields();
+        } catch (\Exception $e) {
+            throw new PsMcpResourceReadException($e->getMessage(), $e->getCode());
+        }
     }
 }
