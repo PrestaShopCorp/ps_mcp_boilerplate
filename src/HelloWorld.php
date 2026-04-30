@@ -29,6 +29,7 @@ class HelloWorld
 {
     #[PsMcpTool(
         name: 'say_hello',
+        title: 'Hello User',
         description: 'Say hello to a user',
         annotations: new PsMcpToolAnnotations(
             title: 'Hello User',
@@ -63,19 +64,8 @@ class HelloWorld
 
     #[PsMcpPrompt(
         name: 'image_generation',
+        title: 'Image Generation',
         description: 'Generate images for products',
-        arguments: [
-            new PsMcpPromptArgument(
-                name: 'color',
-                description: 'The color of the image to generate',
-                required: true,
-            ),
-            new PsMcpPromptArgument(
-                name: 'size',
-                description: 'The size of the image to generate (e.g., 100x100)',
-                required: true,
-            )
-        ],
         icons: [
             new PsMcpIcon(
                 src: 'https://picsum.photos/100/100',

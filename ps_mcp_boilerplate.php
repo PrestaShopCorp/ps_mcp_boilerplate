@@ -19,7 +19,7 @@ if (!defined('_PS_VERSION_')) {
 class Ps_mcp_boilerplate extends Module
 {
     public $version;
-    public $multistoreCompatibility;
+    public $multistoreCompatibility = false;
     public $emailSupport;
     public $termsOfServiceUrl;
 
